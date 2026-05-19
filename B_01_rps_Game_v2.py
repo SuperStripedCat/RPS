@@ -1,11 +1,15 @@
 import random
 
 
-def string_checker(user_response, valid_ans):
+def string_checker(question, valid_ans):
+
+    error = f"Please enter a valid choice from {valid_ans}"
+
     while True:
 
+
         # Get user response and make sure it's lowercase
-        user_response = user_response.lower()
+        user_response = input(question).lower()
 
         for item in valid_ans:
             #check if the user response is a word in the list
@@ -17,7 +21,7 @@ def string_checker(user_response, valid_ans):
             elif user_response == item[0]:
                 return item
 
-        return "Invalid"
+        print(error)
 
 def int_check(question, exit_code=None):
     """ checks for an integer more than 0 (allows <enter>) """
@@ -87,9 +91,14 @@ Try to win!
 # Initialise game variables
 mode = "regular"
 rounds_played = 0
+rounds_won = 0
+rounds_lost = 0
+rounds_tied = 0
 
 rps_list = ["rock", "paper", "scissors", "xxx"]
 yes_no = ("yes", "no")
+
+game_history = []
 
 print("💎📰✂️ Rock / Paper / Scissors Game 💎📰✂️")
 print()
@@ -103,36 +112,42 @@ if want_instructions == "yes":
 # Ask user for the number of rounds / infinite mode
 num_rounds = int_check("How many rounds would you like? Push <enter> for infinite mode:", "" )
 
-if num_rounds == "infinite":
+if num_rounds == "":
     mode = "infinite"
     num_rounds = 5
 
 # Game loop starts here
 while rounds_played < num_rounds:
-    user_choice = input("choose: ")
 
     # Rounds heading
     if mode == "infinite":
-        rounds_heading = f"\n💿💿💿 Round {rounds_played} ( Infinite Mode) 💿💿💿 "
+        rounds_heading = f"\n💿💿💿 Round {rounds_played + 1} ( Infinite Mode) 💿💿💿 "
 
     else:
-        rounds_heading = f"\n💿💿💿 Round {rounds_played} of {num_rounds} 💿💿💿 "
+        rounds_heading = f"\n💿💿💿 Round {rounds_played + 1} of {num_rounds} 💿💿💿 "
 
     print(rounds_heading)
     print()
 
-    user_points = input("choose: ")
+    user_choice = string_checker("choose: ", rps_list)
 
-    if user_points == "xxx":
+    if user_choice == "xxx":
         break
 
     # randomly choose from the rps list (excluding the exit code)
     comp_choice = random.choice(rps_list[:-1])
 
     result = rps_compare(user_choice, comp_choice)
-    print(f"{user_choice} vs {comp_choice}, {result}")
+    feedback = f"{user_choice} vs {comp_choice}, {result}"
 
     rounds_played += 1
+
+    print(feedback)
+    history_item = f"Round {rounds_played}: {feedback}"
+
+    game_history.append(history_item)
+
+
 
     # if users are in infinite mode, increase number of rounds!
     if mode == "infinite":
@@ -141,3 +156,8 @@ while rounds_played < num_rounds:
 # Game loop ends here
 
 # Game History / Statistics area ,
+print()
+print("Game History","🤣")
+
+for item in game_history:
+    print(item)
